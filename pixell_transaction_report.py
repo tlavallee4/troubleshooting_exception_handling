@@ -37,14 +37,15 @@ try:
             ## if transaction type is not matching valid transaction type, the valid record is actually invalid
             if transaction_type != valid_transaction_types:
                 valid_record = False
-                error_message = 'invalid transaction type'
+                error_message += 'ERROR: record has invalid transaction type'
             # Extract the transaction amount from the third column
             ### VALIDATION 2 ###
+            # Stating error in transaction amount
             try:
                 transaction_amount = float(row[2])
             except ValueError:
                 valid_record = False
-                error_message = 'record has non-numeric transaction amount'
+                error_message += 'ERROR: record has non-numeric transaction amount'
 
             if valid_record:
                 # Initialize the customer's account balance if it doesn't already exist
@@ -60,11 +61,14 @@ try:
                     customer_data[customer_id]['balance'] += transaction_amount
                     transaction_count += 1
                     total_transaction_amount += transaction_amount
-                
-                # Record  transactions in the customer's transaction history
-                customer_data[customer_id]['transactions'].append((transaction_amount, transaction_type))
+                    # Record  transactions in the customer's transaction history
+                    customer_data[customer_id]['transactions'].append((transaction_amount, transaction_type))
         
         ### COLLECT INVALID RECORDS ###
+                else:
+                    errors = (row, error_message)
+                    rejected_records.append(errors)
+                    
         
     print("PiXELL River Transaction Report\n===============================\n")
     # Print the final account balances for each customer

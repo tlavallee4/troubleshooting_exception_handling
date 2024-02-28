@@ -14,3 +14,6 @@ This assignment is to learn how to fix logic errors using exception handling and
 
 ## Code Modification:
 [Indicate the modification(s) made and the purpose of the modification(s)]
+
+## Code Modification:
+[Indicate the modification(s) made and the purpose of the modification(s)]
