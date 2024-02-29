@@ -20,3 +20,6 @@ This assignment is to learn how to fix logic errors using exception handling and
 
 ## Code Modification:
 modified the pixell transaction report to include a tuple of the errors inside bank data file
+
+## Code Modification:
+Modified the code in pixell transaction report by changiing transaction_counter to transaction_count on line 86, changed != to not in in line 40, changed elif to if in line 58
