@@ -23,7 +23,8 @@ os.system('cls' if os.name == 'nt' else 'clear')
 try:
     with open('bank_data.csv', 'r') as csv_file:
         reader = csv.reader(csv_file)
-    
+        # Skipping to the next row in the bank_data file
+        next(reader)
         for row in reader:
             # Reset valid record and error message for each iteration
             valid_record = True
@@ -36,7 +37,7 @@ try:
             transaction_type = row[1]
             
             ### VALIDATION 1 ###
-            ## if transaction type is not matching valid transaction type, the valid record is actually invalid
+            ## if transaction type is not matching valid transaction type, the valid record is actually invalid and states the error
             if transaction_type not in valid_transaction_types:
                 valid_record = False
                 error_message += ' ERROR: record has invalid transaction type '
@@ -59,37 +60,39 @@ try:
                     customer_data[customer_id]['balance'] += transaction_amount
                     transaction_count += 1
                     total_transaction_amount += transaction_amount
-                elif transaction_type == 'withdrawal':
-                    customer_data[customer_id]['balance'] += transaction_amount
+                elif transaction_type == 'withdraw':
+                    customer_data[customer_id]['balance'] -= transaction_amount
                     transaction_count += 1
                     total_transaction_amount += transaction_amount
                     # Record  transactions in the customer's transaction history
-                    customer_data[customer_id]['transactions'].append((transaction_amount, transaction_type))
+                customer_data[customer_id]['transactions'].append((transaction_amount, transaction_type))
         
         ### COLLECT INVALID RECORDS ###
             else:
                 errors = (row, error_message)
                 rejected_records.append(errors)
-                    
-        
-    print("PiXELL River Transaction Report\n===============================\n")
-    # Print the final account balances for each customer
-    for customer_id, data in customer_data.items():
-        balance = data['balance']
-        print(f"\nCustomer {customer_id} has a balance of ${balance:,.2f}.")
-        # Print the transaction history for the customer
-        print("Transaction History:")
-        for transaction in data['transactions']:
-            amount, type = transaction
-            print(f"\t{type.capitalize()}: ${amount:,.2f}")
-
-    print(f"\nAVERAGE TRANSACTION AMOUNT: ${(total_transaction_amount / transaction_count):,.2f}")
-
-    print("\nREJECTED RECORDS\n================")
-    for record in rejected_records:
-        print("REJECTED: ", record)
-
+# stating errors in code
 except FileNotFoundError as e:
     print("File does not exist", e)
 except Exception as e:
     print("ERROR:" , e)
+                    
+        
+print("PiXELL River Transaction Report\n===============================\n")
+# Print the final account balances for each customer
+for customer_id, data in customer_data.items():
+    balance = data['balance']
+    print(f"\nCustomer {customer_id} has a balance of ${balance:,.2f}.")
+    # Print the transaction history for the customer
+    print("Transaction History:")
+    for transaction in data['transactions']:
+        amount, type = transaction
+        print(f"\t{type.capitalize()}: ${amount:,.2f}")
+        
+# print average transaction amount for all customers 
+print(f"\nAVERAGE TRANSACTION AMOUNT: ${(total_transaction_amount / transaction_count):,.2f}")
+
+# print records that are invalid/rejected
+print("\nREJECTED RECORDS\n================")
+for record in rejected_records:
+    print("REJECTED: ", record)
